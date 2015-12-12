@@ -1,0 +1,29 @@
+<ion-view view-title="Dashboard" ng-controller="DashCtrl" ng-init="getItems()">
+  <ion-content scroller>
+  <ion-refresher 
+        pulling-text="Pull to refresh"
+        refreshing-text="Loading..."
+        on-refresh="getItems()">                    
+  </ion-refresher>
+
+  <div class="list">
+
+            <a  ng-repeat="item in items.results"
+                href="#/tab/dash/{{item.objectId}}"
+                class="item item-thumbnail-left"
+                >
+
+                  <img image-lazy-src="img/{{ item.img }}.png" image-lazy-loader="spiral">
+
+                  <h2>{{ item.model }}</h2>
+                  <h4>{{ item.uuid }}</h4>
+                  <h4>{{ item.platform }}</h4>
+                  <h4>{{ item.screenRes }}</h4>
+                  
+            </a>
+
+  </div>
+
+
+  </ion-content>
+</ion-view>
