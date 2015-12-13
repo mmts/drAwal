@@ -1,13 +1,20 @@
 angular.module('starter.controllers', [])
 
-.controller('DashCtrl',function( $scope, $http, $timeout, $cordovaToast){
+.controller('DashCtrl',function( $scope, $http, $timeout, $cordovaToast, $ionicLoading){
 
  //getting info from REST api from parse 
- 
-  $scope.items = [  ];
+ $scope.items = [  ];
 
+ $ionicLoading.show({
+                content: 'Loading',
+                animation: 'fade-in',
+                showBackdrop: true,
+                maxWidth: 200,
+                showDelay: 0
+            });
 
   $scope.getItems = function() {
+
 
     $http({method : 'GET',url : 'https://api.parse.com/1/classes/DeviceObject', 
       headers:  {  'X-Parse-Application-Id':'rIErvZmEdzJQ5QADjiRhqhUdouVnvjwCYP9qWmyg', 
@@ -16,16 +23,18 @@ angular.module('starter.controllers', [])
 
 
         .success(function(data, status) {
+
           $timeout(function() {
             //data baru 
             $scope.items = data;
 
             $scope.$broadcast('scroll.refreshComplete');
+            $ionicLoading.hide();
           }, 1000);
         })
         .error(function(data, status) {
           $timeout(function() {
-          
+            console.log(error.message);
             $cordovaToast.showLongBottom('Please Check Your Internet Connection')
               .then(function(success) {
                   // Do something on success
@@ -37,12 +46,43 @@ angular.module('starter.controllers', [])
           }, 1000);
         })
 
+    }
+ /*
+ $scope.getItems = function(params) {
+        var DeviceObject = Parse.Object.extend("DeviceObject");
+        var query = new Parse.Query(DeviceObject);
+        query.find({
+            success: function(results) {
+              
+                //alert("Successfully retrieved " + results.length + " Device!");
+              
+
+                for (var i = 0; i < results.length; i++) {
+                    var object = results[i];
+                    //return{object.id + ' - ' + object.get("uuid") + " " + object.get("platform")};
+                      $scope.$apply(function(){
+                      $scope.items.push(object);
+                    });
+                    console.log(object);  
+                                                        
+                }
+              // Stop the ion-refresher from spinning
+              //$scope.$broadcast('scroll.refreshComplete');
+              
+                         
+            },
+            error: function(error) {
+                alert("Error: " + error.code + " " + error.message);
+                
+            }  
+        
+        });
     };
-
-
+*/
 })
 
-.controller('DevInfoCtrl', function($scope, $stateParams, $cordovaToast ) {
+
+.controller('DevInfoCtrl', function($scope) {
   $scope.getDevice = function(params) {
         var DeviceObject = Parse.Object.extend("DeviceObject");
         var query = new Parse.Query(DeviceObject);
