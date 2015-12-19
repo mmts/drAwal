@@ -1,7 +1,10 @@
-<ion-view view-title="Dev Info">
-	<ion-content >
-		<h2> test </h2>
-	</ion-content> 
+<ion-view view-title="Dev Info" ng-controller="MapCtrl">
+	<ion-content scroll="false">
+  			<ng-map style="width:100%;height:100%;" center="-5.149311, 117.070313" zoom="15">
+  				<marker position="{{ latitude }},{{ longitude }}" animation="DROP" centered="true"></marker>
+  			</ng-map>
+    </ion-content>
+	
 </ion-view>
 
 	
