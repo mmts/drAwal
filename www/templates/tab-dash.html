@@ -7,20 +7,20 @@
   </ion-refresher>
 
   <div class="list">
-
+           
             <a  ng-repeat="item in items"
                 href="#/tab/dash/{{item.get('longitude')}}/{{item.get('latitude')}}"
                 class="item item-thumbnail-left"
                 >
-
                   <img image-lazy-src='img/{{ item.get("img") }}.png' image-lazy-loader="spiral">
 
                   <h2>{{ item.get("model") }}</h2>
                   <h4>{{ item.get("uuid") }}</h4>
                   <h4>{{ item.get("platform") }}</h4>
                   <h4>{{ item.get("screenRes") }}</h4>
-                  
+                 
             </a>
+            
 
   </div>
 
