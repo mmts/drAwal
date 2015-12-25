@@ -5,16 +5,32 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'ionicLazyLoad', 'ngCordova',  'starter.controllers', 'starter.services', 'ngMap'])
+angular.module('starter', ['ionic', 'ionicLazyLoad', 'starter.controllers', 'starter.services', 'ngMap', 'ionic.service.core', 'ionic.service.push'])
+
+//identify ionic
+.config(['$ionicAppProvider', function($ionicAppProvider) {
+  // Identify app
+  $ionicAppProvider.identify({
+    // The App ID (from apps.ionic.io) for the server
+    app_id: '02ac90f6',
+    // The public API key all services will use for this app
+    api_key: '39864c50d9afa352ae20d13ba1b39aa39c8f5f71bd892e35',
+    // Set the app to use development pushes
+    dev_push: true
+  });
+}])
+
+
 
 .run(function($ionicPlatform) {
 
 //parse thing
     Parse.initialize("rIErvZmEdzJQ5QADjiRhqhUdouVnvjwCYP9qWmyg", "kJO9VZyTC66aSVS8EhoHe3ggvx63yRB1AGdmTzku");
-    
-
+  
   $ionicPlatform.ready(function() {
-
+    console.log(device.uuid);
+    // myServices.setDeviceUUID(device.uuid);
+    // alert(myServices.getDeviceUUID());
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
     if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
@@ -30,7 +46,6 @@ angular.module('starter', ['ionic', 'ionicLazyLoad', 'ngCordova',  'starter.cont
 })
 
 .config(function($stateProvider, $urlRouterProvider) {
-
   // Ionic uses AngularUI Router which uses the concept of states
   // Learn more here: https://github.com/angular-ui/ui-router
   // Set up the various states which the app can be in.
