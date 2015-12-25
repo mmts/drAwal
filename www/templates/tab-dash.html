@@ -13,11 +13,11 @@
                 class="item item-thumbnail-left"
                 >
                   <img image-lazy-src='img/{{ item.get("img") }}.png' image-lazy-loader="spiral">
-
-                  <h2>{{ item.get("model") }}</h2>
-                  <h4>{{ item.get("uuid") }}</h4>
-                  <h4>{{ item.get("platform") }}</h4>
-                  <h4>{{ item.get("screenRes") }}</h4>
+                  <h2> Device Info </h2>
+                  <p>Model : {{ item.get("model") }}</p>
+                  <!-- <h4>{{ item.get("uuid") }}</h4>-->
+                   <p>OS version : {{ item.get("platform") }}</p>
+                  <p>Screen Resolution : {{ item.get("screenRes") }}</p>
                  
             </a>
             

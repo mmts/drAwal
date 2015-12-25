@@ -28,7 +28,7 @@ angular.module('starter', ['ionic', 'ionicLazyLoad', 'starter.controllers', 'sta
     Parse.initialize("rIErvZmEdzJQ5QADjiRhqhUdouVnvjwCYP9qWmyg", "kJO9VZyTC66aSVS8EhoHe3ggvx63yRB1AGdmTzku");
   
   $ionicPlatform.ready(function() {
-    console.log(device.uuid);
+
     // myServices.setDeviceUUID(device.uuid);
     // alert(myServices.getDeviceUUID());
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard

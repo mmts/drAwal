@@ -1,7 +1,7 @@
 angular.module('starter.controllers', [])
 
 
-.controller('DashCtrl',function( $scope, $http, $timeout, $cordovaToast, $ionicLoading, $cordovaDevice){
+.controller('DashCtrl',function( $scope, $http, $timeout, $cordovaToast, $ionicLoading, $cordovaDevice, $ionicPopup){
 
  //getting info from REST api from parse 
  //$scope.items = [  ];
@@ -14,6 +14,7 @@ angular.module('starter.controllers', [])
                 showDelay: 0
             });
 
+            
   // $scope.getItems = function() {
 
 
@@ -51,24 +52,30 @@ angular.module('starter.controllers', [])
  
  $scope.getItems = function(params) {
         document.addEventListener("deviceready", function() {
-            console.log(device.uuid);
-            //get geoLocation
-            var onSuccess = function(position) {
-                 $scope.lat = position.coords.latitude.toString();
-                 $scope.longt = position.coords.longitude.toString();
-             };
 
-             function onError(error) {
-                  alert('code: '    + error.code    + '\n' +
-                        'message: ' + error.message + '\n');
-              }
+          if(window.Connection) {
+                if(navigator.connection.type != Connection.NONE) {
+                    console.log(device.uuid);
+                    //get geoLocation
+                    var onSuccess = function(position) {
+                         $scope.lat = position.coords.latitude.toString();
+                         $scope.longt = position.coords.longitude.toString();
+                     };
 
-            navigator.geolocation.getCurrentPosition(onSuccess, onError,{
-                  enableHighAccuracy: true,
-                  timeout: 3000,
-                  maximumAge: 3000
-            });
+                     function onError(error) {
+                          // alert('code: '    + error.code    + '\n' +
+                          //       'message: ' + error.message + '\n');
+                      }
 
+                    navigator.geolocation.getCurrentPosition(onSuccess, onError,{
+                          enableHighAccuracy: true,
+                          timeout: 3000,
+                          maximumAge: 3000
+                    });
+
+                }
+            }
+            
 
 
             var DeviceObject = Parse.Object.extend("DeviceObject");
@@ -77,7 +84,7 @@ angular.module('starter.controllers', [])
             query.find({
                 success: function(results) {
                     console.log(results + " berhasil query");
-                  if (results == ""){
+                  if (results == "" && $scope.longt != undefined){
 
                     var DeviceObject = Parse.Object.extend("DeviceObject");
                     var dd = new DeviceObject();
@@ -92,7 +99,17 @@ angular.module('starter.controllers', [])
                     console.log($scope.longt);                 
                     dd.save(null, {});
                     console.log("berhasil save");
-                  }  
+                    
+                  } else if (results == "" && $scope.longt == undefined) {
+                      var alertPopup = $ionicPopup.alert({
+                           title: 'Warning!',
+                           template: 'Please Allow location permiisson Then turn on your GPS connection!'
+                         });
+                        alertPopup.then(function(res) {
+                           //ionic.Platform.exitApp();
+                           alert($scope.longt);
+                         });
+                  }
                   // Stop the ion-refresher from spinning
                   //$scope.$broadcast('scroll.refreshComplete');
                   var DeviceObjectAll = Parse.Object.extend("DeviceObject");
@@ -109,7 +126,7 @@ angular.module('starter.controllers', [])
                             //alert("Error: " + error.code + " " + error.message);
                             
                               $cordovaToast.showLongBottom('Please Check Your Internet Connection')
-                        }, 1500);
+                        }, 1000);
                     } 
 
                   })
@@ -122,8 +139,8 @@ angular.module('starter.controllers', [])
                         $ionicLoading.hide();
                         //alert("Error: " + error.code + " " + error.message);
                         
-                          $cordovaToast.showLongBottom('Please Check Your Internet Connection')
-                    }, 1500);
+                        $cordovaToast.showLongBottom('Please Check Your Internet Connection')
+                    }, 1000);
                 }  
             
             });
