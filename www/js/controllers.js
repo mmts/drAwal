@@ -1,10 +1,52 @@
 angular.module('starter.controllers', [])
 
 
-.controller('DashCtrl',function( $scope, $http, $timeout, $cordovaToast, $ionicLoading, $cordovaDevice, $ionicPopup){
+.controller('DashCtrl',function( $scope, $http, $timeout, $cordovaToast, $ionicLoading, $cordovaDevice, $ionicPopup, 
+                                $rootScope, $ionicUser, $ionicPush){
 
  //getting info from REST api from parse 
  //$scope.items = [  ];
+
+$scope.identifyUser = function() {
+    console.log('Ionic User: Identifying with Ionic User service');
+
+    var user = $ionicUser.get();
+    if(!user.user_id) {
+      // Set your user_id here, or generate a random one.
+      user.user_id = $ionicUser.generateGUID();
+    };
+
+    // Add some metadata to your user object.
+    angular.extend(user, {
+      name: 'Ionitron',
+      bio: 'I come from planet Ion'
+    });
+
+    // Identify your user with the Ionic User Service
+    $ionicUser.identify(user).then(function(){
+      $scope.identified = true;
+      alert('Identified user ' + user.name + '\n ID ' + user.user_id);
+    });
+  };
+
+$scope.pushRegister = function() {
+    console.log('Ionic Push: Registering user');
+
+    // Register with the Ionic Push service.  All parameters are optional.
+    $ionicPush.register({
+      canShowAlert: true, //Can pushes show an alert on your screen?
+      canSetBadge: true, //Can pushes update app icon badges?
+      canPlaySound: true, //Can notifications play a sound?
+      canRunActionsOnWake: true, //Can run actions outside the app,
+      onNotification: function(notification) {
+        // Handle new push notifications here
+        //alert(notification);
+        console.log(notification);
+        $scope.pushed = true;
+        return true;
+      }
+    });
+  };
 
  $ionicLoading.show({
                 content: 'Loading',
@@ -14,6 +56,7 @@ angular.module('starter.controllers', [])
                 showDelay: 0
             });
 
+                    
             
   // $scope.getItems = function() {
 
@@ -52,7 +95,7 @@ angular.module('starter.controllers', [])
  
  $scope.getItems = function(params) {
         document.addEventListener("deviceready", function() {
-
+           
           if(window.Connection) {
                 if(navigator.connection.type != Connection.NONE) {
                     console.log(device.uuid);
@@ -65,26 +108,39 @@ angular.module('starter.controllers', [])
                      function onError(error) {
                           // alert('code: '    + error.code    + '\n' +
                           //       'message: ' + error.message + '\n');
+                          console.log(error.message);
                       }
 
                     navigator.geolocation.getCurrentPosition(onSuccess, onError,{
-                          enableHighAccuracy: true,
-                          timeout: 3000,
-                          maximumAge: 3000
+                          //enableHighAccuracy: true,
+                          //timeout: 3000,
+                          //maximumAge: 3000
+
                     });
+
+                    $scope.identifyUser();
+                    setTimeout(function() {
+                      alert("idenfied = " + $scope.identified);
+                      if ($scope.identified == true){
+                        $scope.pushRegister();
+                      }
+                      alert($scope.longt);
+                    }, 1500);
+                    
+                    
 
                 }
             }
             
-
-
+        $timeout(function() {
             var DeviceObject = Parse.Object.extend("DeviceObject");
             var query = new Parse.Query(DeviceObject);
             query.equalTo("uuid", device.uuid);
-            query.find({
+            query.first({
                 success: function(results) {
-                    console.log(results + " berhasil query");
-                  if (results == "" && $scope.longt != undefined){
+                    console.log(results + " berhasil query");   
+                    alert($scope.token);
+                  if (results == undefined && $scope.longt != undefined && $scope.token != undefined  ){
 
                     var DeviceObject = Parse.Object.extend("DeviceObject");
                     var dd = new DeviceObject();
@@ -95,41 +151,50 @@ angular.module('starter.controllers', [])
                     dd.set("screenRes", (screen.width*ratio) + 'x' + (screen.height*ratio) );
                     dd.set("img", $cordovaDevice.getPlatform());
                     dd.set("longitude", $scope.longt);
-                    dd.set("latitude", $scope.lat);  
-                    console.log($scope.longt);                 
+                    dd.set("latitude", $scope.lat);
+                    dd.set("token_id", $scope.token);  
+                    //alert($scope.token);                 
                     dd.save(null, {});
                     console.log("berhasil save");
-                    
-                  } else if (results == "" && $scope.longt == undefined) {
+
+                  } else if (results == undefined && $scope.longt == undefined) {
                       var alertPopup = $ionicPopup.alert({
                            title: 'Warning!',
-                           template: 'Please Allow location permiisson Then turn on your GPS connection!'
+                           template: 'Please Allow location permission then turn ON your GPS connection!'
                          });
                         alertPopup.then(function(res) {
-                           //ionic.Platform.exitApp();
-                           alert($scope.longt);
+                           ionic.Platform.exitApp();
+                           //alert($scope.longt);
                          });
-                  }
-                  // Stop the ion-refresher from spinning
-                  //$scope.$broadcast('scroll.refreshComplete');
-                  var DeviceObjectAll = Parse.Object.extend("DeviceObject");
-                  var queryAll = new Parse.Query(DeviceObjectAll);
-                  queryAll.find({
-                    success: function(results) {
-                    $scope.items = results;
-                    $scope.$broadcast('scroll.refreshComplete');
-                    $ionicLoading.hide();
-                    },error: function(error) {
-                        $timeout(function() {
-                            $scope.$broadcast('scroll.refreshComplete');
-                            $ionicLoading.hide();
-                            //alert("Error: " + error.code + " " + error.message);
-                            
-                              $cordovaToast.showLongBottom('Please Check Your Internet Connection')
-                        }, 1000);
-                    } 
 
-                  })
+                  } else if (results != undefined && $rootScope.token != undefined){
+
+                      results.set("token_id", $scope.token); 
+                      results.save();
+                      console.log("berhasil edit");
+
+                  } 
+                      
+                  // Stop the ion-refresher from spinning
+                      //$scope.$broadcast('scroll.refreshComplete');
+                      var DeviceObjectAll = Parse.Object.extend("DeviceObject");
+                      var queryAll = new Parse.Query(DeviceObjectAll);
+                      queryAll.find({
+                        success: function(results) {
+                        $scope.items = results;
+                        $scope.$broadcast('scroll.refreshComplete');
+                        $ionicLoading.hide();
+                        },error: function(error) {
+                            $timeout(function() {
+                                $scope.$broadcast('scroll.refreshComplete');
+                                $ionicLoading.hide();
+                                //alert("Error: " + error.code + " " + error.message);
+                                
+                                  $cordovaToast.showLongBottom('Please Check Your Internet Connection')
+                            }, 1000);
+                        } 
+
+                      })
                     
                              
                 },
@@ -144,6 +209,7 @@ angular.module('starter.controllers', [])
                 }  
             
             });
+          }, 2000);
         }, false);
 
         
@@ -192,51 +258,15 @@ $scope.latitude = $stateParams.latitude;
 .controller('PushCtrl', function($scope, $rootScope, $ionicUser, $ionicPush, $http) {
 
   $rootScope.$on('$cordovaPush:tokenReceived', function(event, data) {
-    // alert("Successfully registered token " + data.token);
+     alert("Successfully registered token " + data.token);
     console.log('Ionic Push: Got token ', data.token, data.platform);
     console.log(data.token);
     $scope.token = data.token;
   });
 
   // Identifies a user with the Ionic User service
-  $scope.identifyUser = function() {
-    console.log('Ionic User: Identifying with Ionic User service');
-
-    var user = $ionicUser.get();
-    if(!user.user_id) {
-      // Set your user_id here, or generate a random one.
-      user.user_id = $ionicUser.generateGUID();
-    };
-
-    // Add some metadata to your user object.
-    angular.extend(user, {
-      name: 'Ionitron',
-      bio: 'I come from planet Ion'
-    });
-
-    // Identify your user with the Ionic User Service
-    $ionicUser.identify(user).then(function(){
-      $scope.identified = true;
-      alert('Identified user ' + user.name + '\n ID ' + user.user_id);
-    });
-
-    //push register
-    console.log('Ionic Push: Registering user');
-
-    // Register with the Ionic Push service.  All parameters are optional.
-    $ionicPush.register({
-      canShowAlert: true, //Can pushes show an alert on your screen?
-      canSetBadge: true, //Can pushes update app icon badges?
-      canPlaySound: true, //Can notifications play a sound?
-      canRunActionsOnWake: true, //Can run actions outside the app,
-      onNotification: function(notification) {
-        console.log("notif");
-        console.log(notification);
-        // Handle new push notifications here
-        // alert(notification);
-        return true;
-      }
-    });
+  $scope.push = function() {
+    
 
     //push notif ke token yang di atas
     console.log("hehe");

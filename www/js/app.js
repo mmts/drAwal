@@ -22,8 +22,18 @@ angular.module('starter', ['ionic', 'ionicLazyLoad', 'starter.controllers', 'sta
 
 
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $ionicUser, $ionicPush, $rootScope) {
+  
+ 
+                    $rootScope.$on('$cordovaPush:tokenReceived', function(event, data) {
+                      alert("Successfully registered token " + data.token);
+                      //console.log('Ionic Push: Got token ', data.token, data.platform);
+                      //console.log(data.token);
+                      //console.log(data.platform);
+                      $rootScope.token = data.token;
+                    });
 
+                    
 //parse thing
     Parse.initialize("rIErvZmEdzJQ5QADjiRhqhUdouVnvjwCYP9qWmyg", "kJO9VZyTC66aSVS8EhoHe3ggvx63yRB1AGdmTzku");
   
