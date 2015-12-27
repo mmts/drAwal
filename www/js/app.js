@@ -26,7 +26,7 @@ angular.module('starter', ['ionic', 'ionicLazyLoad', 'starter.controllers', 'sta
   
  
                     $rootScope.$on('$cordovaPush:tokenReceived', function(event, data) {
-                      alert("Successfully registered token " + data.token);
+                      console.log("Successfully registered token " + data.token);
                       //console.log('Ionic Push: Got token ', data.token, data.platform);
                       //console.log(data.token);
                       //console.log(data.platform);

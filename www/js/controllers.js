@@ -25,7 +25,7 @@ $scope.identifyUser = function() {
     // Identify your user with the Ionic User Service
     $ionicUser.identify(user).then(function(){
       $scope.identified = true;
-      alert('Identified user ' + user.name + '\n ID ' + user.user_id);
+      console.log('Identified user ' + user.name + '\n ID ' + user.user_id);
     });
   };
 
@@ -120,11 +120,11 @@ $scope.pushRegister = function() {
 
                     $scope.identifyUser();
                     setTimeout(function() {
-                      alert("idenfied = " + $scope.identified);
+                      console.log("idenfied = " + $scope.identified);
                       if ($scope.identified == true){
                         $scope.pushRegister();
                       }
-                      alert($scope.longt);
+                      console.log("longitude " + $scope.longt);
                     }, 1500);
                     
                     
@@ -138,8 +138,8 @@ $scope.pushRegister = function() {
             query.equalTo("uuid", device.uuid);
             query.first({
                 success: function(results) {
-                    console.log(results + " berhasil query");   
-                    alert($scope.token);
+                    //console.log(results + " berhasil query");   
+                    console.log("token saat ini " + $scope.token);
                   if (results == undefined && $scope.longt != undefined && $scope.token != undefined  ){
 
                     var DeviceObject = Parse.Object.extend("DeviceObject");
@@ -225,39 +225,12 @@ $scope.pushRegister = function() {
   });
 
   // onSuccess Callback
-$scope.longitude = $stateParams.longitude;
-$scope.latitude = $stateParams.latitude;
+  $scope.longitude = $stateParams.longitude;
+  $scope.latitude = $stateParams.latitude;
   
-
-
 })
-
-.controller('DevInfoCtrl', function($scope) {
-  $scope.getDevice = function(params) {
-        var DeviceObject = Parse.Object.extend("DeviceObject");
-        var query = new Parse.Query(DeviceObject);
-        if(params !== undefined) {
-                query.equalTo("uuid", params);
-        }
-        query.find({
-            success: function(results) {
-                alert("Successfully retrieved " + results.length + " Device!");
-                for (var i = 0; i < results.length; i++) {
-                    var object = results[i];
-                    alert(object.id + ' - ' + object.get("uuid") + " " + object.get("platform"));
-                }
-            },
-            error: function(error) {
-                alert("Error: " + error.code + " " + error.message);
-            }
-        });
-    };
-})
-
 
 .controller('PushCtrl', function($scope, $stateParams, $ionicUser, $ionicPush, $http) {
-
-
   // Identifies a user with the Ionic User service
   $scope.push = function(token_id) {
     
@@ -271,12 +244,12 @@ $scope.latitude = $stateParams.latitude;
         'Authorization': 'basic ' + auth
       }
     };
-    alert("token yang diambil" + $stateParams.token_id);
+    console.log("token yang diambil" + $stateParams.token_id);
     $http.post('https://push.ionic.io/api/v1/push', {
       tokens: [$stateParams.token_id],
       //user_ids: ['da63a250-e505-4710-892b-0b0e160c603a'],
       notification: {
-          alert: "Testing notif"
+          alert: "Hey Where are you?"
       }
     },config).success(function(response) {
       console.log("response push");
@@ -287,47 +260,7 @@ $scope.latitude = $stateParams.latitude;
 
   };
 
-  // $scope.pushNotifById = function() {
-  //   console.log("hehe");
-  //   var privateKey = 'ae7166efeb9d4b93373cf079e3516f3b76b9bcab1d99063d';
-  //   var auth = btoa(privateKey + ':');
-  //   var config = {headers:  {
-  //       'Content-Type': 'application/json',
-  //       'X-Ionic-Application-Id': '02ac90f6',
-  //       'Authorization': 'basic ' + auth
-  //     }
-  //   };
-    
-  //   $http.post('https://push.ionic.io/api/v1/push', {
-  //     tokens: [$scope.token_id],
-  //     //user_ids: ['da63a250-e505-4710-892b-0b0e160c603a'],
-  //     notification: {
-  //         alert: "Testing notif"
-  //     }
-  //   },config).success(function(response) {
-  //     alert($scope.token_id);
-  //     console.log(response);
-  //   })
-  // }
-
-  // Registers a device for push notifications and stores its token
-  // $scope.pushRegister = function() {
-  //   console.log('Ionic Push: Registering user');
-
-  //   // Register with the Ionic Push service.  All parameters are optional.
-  //   $ionicPush.register({
-  //     canShowAlert: true, //Can pushes show an alert on your screen?
-  //     canSetBadge: true, //Can pushes update app icon badges?
-  //     canPlaySound: true, //Can notifications play a sound?
-  //     canRunActionsOnWake: true, //Can run actions outside the app,
-  //     onNotification: function(notification) {
-  //       // Handle new push notifications here
-  //       alert(notification);
-  //       return true;
-  //     }
-  //   });
-  // };
-})
+});
 
 
 //chat
@@ -346,12 +279,12 @@ $scope.latitude = $stateParams.latitude;
 //   };
 // })
 
-.controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
-  $scope.chat = Chats.get($stateParams.chatId);
-})
+// .controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
+//   $scope.chat = Chats.get($stateParams.chatId);
+// })
 
-.controller('AccountCtrl', function($scope) {
-  $scope.settings = {
-    enableFriends: true
-  };
-});
+// .controller('AccountCtrl', function($scope) {
+//   $scope.settings = {
+//     enableFriends: true
+//   };
+// });
