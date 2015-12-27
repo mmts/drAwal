@@ -9,7 +9,7 @@
   <div class="list">
            
             <a  ng-repeat="item in items"
-                href="#/tab/dash/{{item.get('longitude')}}/{{item.get('latitude')}}"
+                href="#/tab/dash/{{item.get('longitude')}}/{{item.get('latitude')}}/{{item.get('token_id')}}"
                 class="item item-thumbnail-left"
                 >
                   <img image-lazy-src='img/{{ item.get("img") }}.png' image-lazy-loader="spiral">

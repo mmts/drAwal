@@ -255,19 +255,12 @@ $scope.latitude = $stateParams.latitude;
 })
 
 
-.controller('PushCtrl', function($scope, $rootScope, $ionicUser, $ionicPush, $http) {
+.controller('PushCtrl', function($scope, $stateParams, $ionicUser, $ionicPush, $http) {
 
-  $rootScope.$on('$cordovaPush:tokenReceived', function(event, data) {
-     alert("Successfully registered token " + data.token);
-    console.log('Ionic Push: Got token ', data.token, data.platform);
-    console.log(data.token);
-    $scope.token = data.token;
-  });
 
   // Identifies a user with the Ionic User service
-  $scope.push = function() {
+  $scope.push = function(token_id) {
     
-
     //push notif ke token yang di atas
     console.log("hehe");
     var privateKey = 'ae7166efeb9d4b93373cf079e3516f3b76b9bcab1d99063d';
@@ -278,9 +271,9 @@ $scope.latitude = $stateParams.latitude;
         'Authorization': 'basic ' + auth
       }
     };
-    console.log($scope.token);
+    alert("token yang diambil" + $stateParams.token_id);
     $http.post('https://push.ionic.io/api/v1/push', {
-      tokens: [$scope.token],
+      tokens: [$stateParams.token_id],
       //user_ids: ['da63a250-e505-4710-892b-0b0e160c603a'],
       notification: {
           alert: "Testing notif"

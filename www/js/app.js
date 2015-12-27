@@ -110,7 +110,7 @@ angular.module('starter', ['ionic', 'ionicLazyLoad', 'starter.controllers', 'sta
     }
   })
   .state('tab.dash-info', {
-    url: '/dash/:longitude/:latitude',
+    url: '/dash/:longitude/:latitude/:token_id',
     views: {
       'tab-dash': {
         templateUrl: 'templates/tab-info.html',
