@@ -48,13 +48,13 @@ $scope.pushRegister = function() {
     });
   };
 
- // $ionicLoading.show({
- //                content: 'Loading',
- //                animation: 'fade-in',
- //                showBackdrop: true,
- //                maxWidth: 200,
- //                showDelay: 0
- //            });
+ $ionicLoading.show({
+                content: 'Loading',
+                animation: 'fade-in',
+                showBackdrop: true,
+                maxWidth: 200,
+                showDelay: 0
+            });
 
 
 $scope.getLocation = function(){
