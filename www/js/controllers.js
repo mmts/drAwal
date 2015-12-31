@@ -48,15 +48,40 @@ $scope.pushRegister = function() {
     });
   };
 
- $ionicLoading.show({
-                content: 'Loading',
-                animation: 'fade-in',
-                showBackdrop: true,
-                maxWidth: 200,
-                showDelay: 0
-            });
+ // $ionicLoading.show({
+ //                content: 'Loading',
+ //                animation: 'fade-in',
+ //                showBackdrop: true,
+ //                maxWidth: 200,
+ //                showDelay: 0
+ //            });
 
-                    
+
+$scope.getLocation = function(){
+                    var onSuccess = function(position) {
+                         $scope.lat = position.coords.latitude.toString();
+                         $scope.longt = position.coords.longitude.toString();
+                         
+                     };
+
+                     function onError(error) {
+                           //alert('code: '    + error.code    + '\n' +
+                           //      'message: ' + error.message + '\n');
+                          console.log(error.message);
+                      }
+
+                     navigator.geolocation.getCurrentPosition(onSuccess, onError,{
+                          //enableHighAccuracy: true,
+                          //timeout: 3000,
+                          //maximumAge: 3000
+
+                    });
+
+          $timeout(function() {
+            $scope.getItems();
+
+          },300000);
+}           
             
   // $scope.getItems = function() {
 
@@ -100,23 +125,7 @@ $scope.pushRegister = function() {
                 if(navigator.connection.type != Connection.NONE) {
                     console.log(device.uuid);
                     //get geoLocation
-                    var onSuccess = function(position) {
-                         $scope.lat = position.coords.latitude.toString();
-                         $scope.longt = position.coords.longitude.toString();
-                     };
-
-                     function onError(error) {
-                          // alert('code: '    + error.code    + '\n' +
-                          //       'message: ' + error.message + '\n');
-                          console.log(error.message);
-                      }
-
-                    navigator.geolocation.getCurrentPosition(onSuccess, onError,{
-                          //enableHighAccuracy: true,
-                          //timeout: 3000,
-                          //maximumAge: 3000
-
-                    });
+                    $scope.getLocation();
 
                     $scope.identifyUser();
                     setTimeout(function() {
@@ -168,8 +177,10 @@ $scope.pushRegister = function() {
                          });
 
                   } else if (results != undefined && $rootScope.token != undefined){
-
-                      results.set("token_id", $scope.token); 
+                      //alert($scope.longt);
+                      results.set("token_id", $scope.token);
+                      results.set("longitude", $scope.longt);
+                      results.set("latitude", $scope.lat);
                       results.save();
                       console.log("berhasil edit");
 
@@ -209,7 +220,7 @@ $scope.pushRegister = function() {
                 }  
             
             });
-          }, 2000);
+          }, 2500);
         }, false);
 
         
